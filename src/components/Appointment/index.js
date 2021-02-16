@@ -17,9 +17,9 @@ export default function Appointment(props){
       {props.interview ? <Show 
       student={props.interview.student}
       interviewer={props.interview.interviewer}
-      onEdit={console.log("onEdit")}
-      onDelete={console.log("onDelete")}
-      /> : <Empty onAdd={console.log("onAdd")}/>}
+      onEdit={()=>console.log("onEdit")}
+      onDelete={()=>console.log("onDelete")}
+      /> : <Empty onAdd={()=>console.log("onAdd")}/>}
 
     </article>
   )
