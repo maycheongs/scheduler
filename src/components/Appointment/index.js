@@ -3,23 +3,45 @@ import './styles.scss'
 import Header from './Header'
 import Show from './Show'
 import Empty from './Empty'
+import Form from './Form'
+import useVisualMode from '../../hooks/useVisualMode'
 
 
 export default function Appointment(props){
 
+  const EMPTY = "EMPTY";
+  const SHOW = "SHOW";
+  const CREATE = "CREATE";
+  const initialMode = props.interview ? SHOW : EMPTY;
+  const {mode,transition,back} = useVisualMode(initialMode);
+  function save (name, interviewer) {
+    const interview = {
+      student: name,
+      interviewer
+    };
+  }
+
   return (
     <article className="appointment">
 
-      <Header 
-      time={props.time}
+      <Header
+        time={props.time}
       />
 
-      {props.interview ? <Show 
-      student={props.interview.student}
-      interviewer={props.interview.interviewer}
-      onEdit={()=>console.log("onEdit")}
-      onDelete={()=>console.log("onDelete")}
-      /> : <Empty onAdd={()=>console.log("onAdd")}/>}
+      {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
+      {mode === SHOW && (
+        <Show
+          student={props.interview.student}
+          interviewer={props.interview.interviewer}
+        />
+      )}
+      {mode === CREATE && (
+        <Form 
+        interviewers={props.interviewers}
+        onSave={console.log("onSaveForm")}
+        onCancel={console.log("onCancelForm")}
+        />
+      )}
 
     </article>
   )
