@@ -46,7 +46,7 @@ export default function useApplicationData() {
   function updateDaysWithSpots(state,type,id=null) {
 
     const newDays = state.days.map(day=> {
-      if( day.name === state.day) {
+      if(day.appointments.indexOf(id) >= 0) {
         if (type === "put" && !state.appointments[id].interview) {
           day.spots--
         }
