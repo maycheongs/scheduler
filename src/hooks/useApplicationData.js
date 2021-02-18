@@ -41,37 +41,30 @@ export default function useApplicationData() {
 
     return axios.put(`/api/appointments/${id}`, { interview })
       .then(() => {
-        const days = [...state.days];
-        //if it is not an edit of an existing interview, spots--
-        if (!state.appointments[id].interview) { 
-          for (let day of days) {
-            if (day.name === state.day) {
-              day.spots--
-            }
+        const days = state.days.map(day => {
+          if (day.name === state.day && !state.appointments[id].interview) {
+            day.spots--
+            return day
           }
-        }
+          return day
+        })
+
         dispatch({ type: "SET_INTERVIEW", id, interview, days });
       })
   }
   
 
   function deleteInterview(id) {
-    const appointment = {
-      ...state.appointments[id],
-      interview: null
-    };
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
+    
     return axios.delete(`/api/appointments/${id}`)
       .then(() => {
-        const days = [...state.days]
-        for (let day of days) {
+        const days = state.days.map(day => {
           if (day.name === state.day) {
             day.spots++
+            return day
           }
-        }
+          return day
+        })
         dispatch({ type: SET_INTERVIEW, id, days, interview: null });
       })
   }

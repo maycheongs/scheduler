@@ -1,7 +1,6 @@
 import React , {useState} from 'react'
 import InterviewerList from '../InterviewerList'
 import Button from '../Button'
-import { action } from '@storybook/addon-actions/dist/preview'
 
 export default function Form(props){
 
@@ -33,14 +32,14 @@ export default function Form(props){
             type="text"
             placeholder="Enter Student Name"
             value={name}
-            onChange={event=> setName(event.target.value)}
-            
-          /*
-            This must be a controlled component
-          */
+            onChange={event => setName(event.target.value)}
           />
         </form>
-        <InterviewerList interviewers={props.interviewers} value={interviewer} onChange={setInterviewer} />
+        <InterviewerList
+          interviewers={props.interviewers}
+          value={interviewer}
+          onChange={setInterviewer}
+        />
       </section>
       <section className="appointment__card-right">
         <section className="appointment__actions">
