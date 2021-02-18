@@ -18,10 +18,10 @@ export default function useApplicationData() {
         const { days, appointments, interviewers } = action
         return { ...state, days, appointments, interviewers }
       case SET_INTERVIEW: {
-        const { id, interview} = action
-        let days = [...state.days]
-        if (action.days) days = action.days
-        return { ...state, days, appointments: { ...state.appointments, [id]: { ...state.appointments[id], interview } } }
+        const { id, interview} = action        
+        const newState = { ...state, appointments: { ...state.appointments, [id]: { ...state.appointments[id], interview } } }
+        const days = daysWithUpdatedSpots(newState);
+        return {...newState, days}
       }
       default:
         throw new Error(
@@ -42,19 +42,16 @@ export default function useApplicationData() {
   }
 
   //takes in the state, type "put"/"delete" and appointment id(for puts) to update open spots for the day the appointment is in.
-  
-  function updateDaysWithSpots(state,type,id=null) {
-
-    const newDays = state.days.map(day=> {
-      if(day.appointments.indexOf(id) >= 0) {
-        if (type === "put" && !state.appointments[id].interview) {
-          day.spots--
+  function daysWithUpdatedSpots(state) {
+    const newDays = state.days.map(day => {
+      let daySpots = 0
+      day.appointments.forEach(apptId => {
+        if (!state.appointments[apptId].interview) {
+          daySpots++
         }
-        if (type ==="delete") {
-          day.spots++
-        }       
-      }
-      return day      
+      })
+      day.spots = daySpots;
+      return day;
     })
     return newDays
   }
@@ -62,8 +59,8 @@ export default function useApplicationData() {
   function bookInterview(id, interview) {
 
     return axios.put(`/api/appointments/${id}`, { interview })
-      .then(() => {        
-        dispatch({ type: "SET_INTERVIEW", id, interview });
+      .then(() => {
+        dispatch({ type: SET_INTERVIEW, id, interview });
       })
   }
     
@@ -90,7 +87,7 @@ export default function useApplicationData() {
         interviewers: interviewers.data
       })
     })
-  }, [])  
+  }, [])
 
 
   useEffect(() => {
@@ -98,19 +95,13 @@ export default function useApplicationData() {
     const webSocket = new WebSocket("ws://localhost:8001", "json")
 
     webSocket.onmessage = function (event) {
-      const {id, interview} = JSON.parse(event.data)
-      let days = [...state.days]
-      if(!interview) {
-        days = updateDaysWithSpots(state,"delete")        
-      } else {
-        days = updateDaysWithSpots(state,"put",id)
-      }
-      dispatch({type:SET_INTERVIEW, id, interview, days});      
+      const { id, interview } = JSON.parse(event.data)
+      dispatch({ type: SET_INTERVIEW, id, interview });
     }
 
     return () => webSocket.close();
-  },[state])
-  
+  }, [])
+
 
   return {
     state,
