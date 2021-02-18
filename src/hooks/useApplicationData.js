@@ -1,14 +1,13 @@
-import {useEffect, useReducer} from 'react'
+import { useEffect, useReducer } from 'react'
 import axios from 'axios'
 
 export default function useApplicationData() {
-  
-  
-  
+
+
   const SET_DAY = "SET_DAY";
   const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
   const SET_INTERVIEW = "SET_INTERVIEW";
-  
+
   function reducer(state, action) {
     switch (action.type) {
       case SET_DAY:
@@ -17,11 +16,11 @@ export default function useApplicationData() {
       case SET_APPLICATION_DATA:
         const { days, appointments, interviewers } = action
         return { ...state, days, appointments, interviewers }
-      case SET_INTERVIEW: {
-        const { id, interview} = action        
+      case SET_INTERVIEW: { 
+        const { id, interview } = action
         const newState = { ...state, appointments: { ...state.appointments, [id]: { ...state.appointments[id], interview } } }
         const days = daysWithUpdatedSpots(newState);
-        return {...newState, days}
+        return { ...newState, days }
       }
       default:
         throw new Error(
@@ -41,7 +40,7 @@ export default function useApplicationData() {
     dispatch({ type: SET_DAY, day })
   }
 
-  //takes in the state, type "put"/"delete" and appointment id(for puts) to update open spots for the day the appointment is in.
+  //takes in the state and returns days array with correct number of open spots in each day
   function daysWithUpdatedSpots(state) {
     const newDays = state.days.map(day => {
       let daySpots = 0
@@ -63,12 +62,12 @@ export default function useApplicationData() {
         dispatch({ type: SET_INTERVIEW, id, interview });
       })
   }
-    
-    
+
+
   function deleteInterview(id) {
 
     return axios.delete(`/api/appointments/${id}`)
-      .then(() => {        
+      .then(() => {
         dispatch({ type: SET_INTERVIEW, id, interview: null });
       })
   }
@@ -89,7 +88,7 @@ export default function useApplicationData() {
     })
   }, [])
 
-
+  //I suppose it could be in the same useEffect but this is clearer (to me)
   useEffect(() => {
 
     const webSocket = new WebSocket("ws://localhost:8001", "json")
