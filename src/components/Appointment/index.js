@@ -18,7 +18,9 @@ export default function Appointment(props){
   const SAVING = "SAVING";
   const CONFIRM = "CONFIRM";
   const DELETING = "DELETING";
-  const ERROR = "ERROR";
+  const ERROR_DELETE = "ERROR_DELETE";
+  const ERROR_SAVE = "ERROR_SAVE";
+  const EDIT = "EDIT";
   const initialMode = props.interview ? SHOW : EMPTY;
   const {mode,transition,back} = useVisualMode(initialMode);
   function save (name, interviewer) {
@@ -29,12 +31,13 @@ export default function Appointment(props){
     transition(SAVING);
     props.bookInterview(props.id, interview)
     .then(() => transition(SHOW))
+    .catch(()=> transition(ERROR_SAVE,true))
   }
   function onDelete() {
-    transition(DELETING);
+    transition(DELETING,true);
     props.deleteInterview(props.id)
     .then(()=> transition(EMPTY))
-    .catch(()=> transition(ERROR,true))
+    .catch(()=> transition(ERROR_DELETE,true))
 
   }
 
@@ -51,10 +54,20 @@ export default function Appointment(props){
           student={props.interview.student}
           interviewer={props.interview.interviewer}
           onDelete={()=> transition(CONFIRM)}
+          onEdit={()=> transition(EDIT)}
         />
       )}
       {mode === CREATE && (
         <Form 
+        interviewers={props.interviewers}
+        onSave={save}
+        onCancel={back}
+        />
+      )}
+      {mode === EDIT && (
+        <Form
+        name={props.interview.student}
+        interviewer={props.interview.interviewer.id}
         interviewers={props.interviewers}
         onSave={save}
         onCancel={back}
@@ -77,9 +90,15 @@ export default function Appointment(props){
         onCancel={back}
         />
       )}
-      {mode === ERROR && (
+      {mode === ERROR_DELETE && (
         <Error
         message="Could not delete appointment"
+        onClose={back}
+        />
+      )}
+      {mode === ERROR_SAVE && (
+        <Error
+        message="Could not save changes"
         onClose={back}
         />
       )}
