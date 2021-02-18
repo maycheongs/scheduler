@@ -1,15 +1,15 @@
 import React, {useState} from 'react'
-export default function useVisualMode(initialMode){
+export default function useVisualMode(initialMode) {
 
-  const [mode,setMode] = useState(initialMode)
+  const [mode, setMode] = useState(initialMode)
   const [history, setHistory] = useState([initialMode])
 
   const transition = (newMode, bool) => {
     if (bool && history.length > 1) {
       setHistory(prev => [...prev].slice(0, prev.length - 1))
-    }    
+    }
     setHistory(prev => [...prev, newMode]);
-    setMode(newMode);    
+    setMode(newMode);
   }
 
   const back = () => {
@@ -18,13 +18,13 @@ export default function useVisualMode(initialMode){
       prevHistory.pop();
       const [prevMode] = prevHistory.slice(-1)
       setHistory([...prevHistory]);
-      setMode(prevMode) 
+      setMode(prevMode)
     }
   }
 
 
   return (
-    {mode, transition, back}
+    { mode, transition, back }
   )
 
 }

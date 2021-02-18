@@ -1,3 +1,5 @@
+
+//takes in state and day STRING to return an array of complete appointment objects
 export function getAppointmentsForDay(state, day) {
 
   let appointments = [];
@@ -7,13 +9,15 @@ export function getAppointmentsForDay(state, day) {
       appointments = dayObj.appointments
     }
   }
-
-  const appointmentArr = appointments.map(num=>{
+  const appointmentArr = appointments.map(num => {
     return state.appointments[num]
   })
 
   return appointmentArr
 }
+
+//takes in state and compressed interview obj ie interview:{student:name, interviewer:id})
+//to return interview with full interviewer details
 
 export function getInterview(state, interview){
   if(!interview) return null;
@@ -22,7 +26,9 @@ export function getInterview(state, interview){
   return {...interview, interviewer: state.interviewers[interviewerId]}
 }
 
-export function getInterviewersForDay(state,day){
+
+//takes in state and day STRING to return an array of complete interviewer objects (not just id)
+export function getInterviewersForDay(state, day) {
 
   let interviewerIds = [];
 
