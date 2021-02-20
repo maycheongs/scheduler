@@ -50,9 +50,10 @@ export default function useApplicationData() {
         }
       })
       day.spots = daySpots;
-      return day;
+      return day; 
     })
-    return newDays
+    return newDays;
+    
   }
 
   function bookInterview(id, interview) {
