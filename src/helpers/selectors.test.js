@@ -1,4 +1,4 @@
-import { getAppointmentsForDay, getInterview, getInterviewersForDay } from "helpers/selectors";
+import { getAppointmentsForDay, getInterview, getInterviewersForDay, deepCopy } from "helpers/selectors";
 
 const state = {
   days: [
@@ -105,3 +105,35 @@ test("getInterviewersForDay returns an empty array when the day is not found", (
   const result = getInterviewersForDay(state, "Wednesday");
   expect(result.length).toEqual(0);
 });
+
+test("deepCopy returns the first layer of deep copy (shallow copy) without changing the original object (an Array)",() => {
+
+  const base = [{key1: 1},{key2: 2}]
+  const newCopy = [...deepCopy(base),'new element']
+
+  expect(base).toEqual([{key1: 1},{key2: 2}]);
+  expect(newCopy).toEqual([{key1: 1},{key2: 2},'new element'])
+
+})
+
+test("deepCopy returns the first layer of deep copy (shallow copy) without changing the original object (an Obj)",() => {
+
+  const base = {key1: 1, key2: 2}
+  const newCopy = {...deepCopy(base), key2: 'changed key'}
+
+  expect(base).toEqual({key1: 1, key2: 2});
+  expect(newCopy).toEqual({key1: 1, key2: 'changed key'})
+
+})
+
+test("deepCopy returns the deep copy without changing the original object (An Array",() => {
+
+  const base = [{key1: {subkey:"subkey"}},{key2: 2}]
+  const newCopy = deepCopy(base)
+  newCopy[0].key1.subkey = "newsubkey"
+
+  expect(base).toEqual([{key1: {subkey:"subkey"}},{key2: 2}]);
+  expect(newCopy).toEqual([{key1: {subkey:"newsubkey"}},{key2: 2}])
+
+})
+
