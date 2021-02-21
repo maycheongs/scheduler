@@ -43,3 +43,21 @@ export function getInterviewersForDay(state, day) {
   })
   return interviewerArr
 }
+
+export function deepCopy(obj) {
+
+  if(typeof obj === "object"){
+    if(Array.isArray(obj)){
+      return obj.reduce((arr, item, i) => {
+        arr[i] = deepCopy(item);
+        return arr;
+    }, []);
+    } else {
+      return Object.keys(obj).reduce((newObj, key) => {
+        newObj[key] = deepCopy(obj[key]);
+        return newObj;
+    }, {})
+    }
+  }
+  return obj
+}

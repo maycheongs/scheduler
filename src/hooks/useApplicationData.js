@@ -16,7 +16,7 @@ export default function useApplicationData() {
       case SET_APPLICATION_DATA:
         const { days, appointments, interviewers } = action
         return { ...state, days, appointments, interviewers }
-      case SET_INTERVIEW: { 
+      case SET_INTERVIEW: {
         const { id, interview } = action
         const newState = { ...state, appointments: { ...state.appointments, [id]: { ...state.appointments[id], interview } } }
         const days = daysWithUpdatedSpots(newState);
@@ -43,17 +43,16 @@ export default function useApplicationData() {
   //takes in the state and returns days array with correct number of open spots in each day
   function daysWithUpdatedSpots(state) {
     const newDays = state.days.map(day => {
-      let daySpots = 0
+      let spots = 0
       day.appointments.forEach(apptId => {
         if (!state.appointments[apptId].interview) {
-          daySpots++
+          spots++
         }
       })
-      day.spots = daySpots;
-      return day; 
+      const dayBuffer = {...day, spots}
+      return dayBuffer;
     })
     return newDays;
-    
   }
 
   function bookInterview(id, interview) {
