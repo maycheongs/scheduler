@@ -13,6 +13,7 @@ import {
 import { render, cleanup } from "@testing-library/react";
 
 import Application from "components/Application";
+import { getAppointmentsForDay } from "helpers/selectors";
 
 afterEach(cleanup);
 
@@ -51,4 +52,38 @@ it("loads data, books an interview and reduces the spots remaining for the first
 
   expect(getByText(day, /no spots remaining/i)).toBeInTheDocument()
 
+})
+
+it("loads data, cancels an interview and increases the spots remaining for Monday by 1", async () => {
+  // 1. Render the Application.
+  const { container } = render(<Application />);
+
+  // 2. Wait until the text "Archie Cohen" is displayed.
+  await waitForElement(() => getByText(container, "Archie Cohen"));
+
+  // 3. Click the "Delete" button on Archie Cohen's appointment.
+  const appointment = getAllByTestId(container, "appointment")
+  .find((appointment) => queryByText(appointment, "Archie Cohen"));
+  fireEvent.click(getByAltText(appointment, "Delete"))
+
+  // 4. Check that the confirmation element with the text "Delete the appointment" is displayed.
+  expect(getByText(appointment,/delete the appointment/i)).toBeInTheDocument()
+
+  // 5. Click the "Confirm" button on the appointment.
+  fireEvent.click(getByText(appointment, "Confirm"))
+
+  // 6. Check that the status element with the text "Deleting" is displayed.
+  expect(getByText(appointment, /deleting/i)).toBeInTheDocument()
+
+  // 7. Wait until the appointment has element with "Add"
+  await waitForElement(() => getByAltText(appointment, "Add"))
+
+  // 8. Check that the DayListItem with the text "Monday" also has the text "2 spots remaining".
+  const day = getAllByTestId(container, "day").find(day => queryByText(day, "Monday"))
+  expect(getByText(day, /2 spots remaining/i)).toBeInTheDocument()
+});
+
+it("loads data, edits an interview and keeps the spots remaining for Monday the same", () => {
+
+  
 })
