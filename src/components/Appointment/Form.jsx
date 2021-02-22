@@ -21,7 +21,7 @@ export default function Form(props){
     return props.onSave(name, interviewer)
   }
 
-  
+
   return (
     <main className="appointment__card appointment__card--create">
       <section className="appointment__card-left">
@@ -36,7 +36,7 @@ export default function Form(props){
           />
         </form>
         <InterviewerList
-          interviewers={props.interviewers}
+          interviewers={props.interviewers.toString()}
           value={interviewer}
           onChange={setInterviewer}
         />
