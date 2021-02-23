@@ -51,7 +51,7 @@ export default function useApplicationData() {
   //I suppose it could be in the same useEffect but this is clearer (to me)
   useEffect(() => {
 
-    const webSocket = new WebSocket("ws://localhost:8001", "json")
+    const webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL, "json")
 
     webSocket.onmessage = function (event) {
       const { id, interview } = JSON.parse(event.data)
