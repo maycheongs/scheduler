@@ -38,7 +38,6 @@ describe("Form", () => {
     const {getByText} = render(<Form interviewers={interviewers} onSave={onSave} name="" />)
 
     /* 3. Click the save button */
-
     fireEvent.click(getByText("Save"))
 
     expect(getByText(/student name cannot be blank/i)).toBeInTheDocument();
