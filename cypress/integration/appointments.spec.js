@@ -8,7 +8,7 @@ describe("Appointments",()=> {
     cy.contains("Monday")
   });
 
-  xit("should book an interview",() => {
+  it("should book an interview",() => {
 
     cy.get("[alt=Add]").first().click();
     cy.get("[data-testid=student-name-input]")
@@ -19,10 +19,11 @@ describe("Appointments",()=> {
 
     cy.contains(".appointment__card--show", "Lydia Miller-Jones")
     .contains("Sylvia Palmer");
+    cy.contains("Monday").parent('[data-testid=day]').should('contain', 'no spots remaining')
 
   });
 
-  xit("should edit an interview",() => {
+  it("should edit an interview",() => {
 
     cy.get("[alt=Edit]").invoke("show").click();
 
@@ -36,6 +37,8 @@ describe("Appointments",()=> {
 
     cy.contains(".appointment__card--show", "Lydia Miller-Jones")
     .contains("Tori Malcolm");
+
+    cy.contains("Monday").parent('[data-testid=day]').should('contain', '1 spot remaining')
   });
 
   it("should cancel an interview",() => {
@@ -46,6 +49,7 @@ describe("Appointments",()=> {
     cy.contains("Deleting").should('not.exist')
 
     cy.contains(".appointment__card--show", "Archie Cohen").should('not.exist')
+    cy.contains("Monday").parent('[data-testid=day]').should('contain', '2 spots remaining')
 
 
   })
