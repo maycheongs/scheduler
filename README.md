@@ -6,7 +6,7 @@ ReactJS, Express, Axios, WebSockets
 
 (testing) Jest, Storybook, Cypress
 ## See it via Netlify
-navigate to : "https://inspiring-mestorf-d221c5.netlify.app/"
+navigate to : "https://scheduler-mayc.netlify.app/"
 
 (might need refresh to activate heroku database)
 
